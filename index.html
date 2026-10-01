@@ -1,21 +1,20 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ambient Dev Space</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyber Terminal Simulator</title>
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Fira Code', monospace;
+      font-family: 'Courier New', Courier, monospace;
     }
 
     body {
-      background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
-      color: #e2e8f0;
+      background-color: #030712;
+      color: #00ff66;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -25,310 +24,272 @@
       overflow-x: hidden;
     }
 
-    .container {
-      background: rgba(15, 23, 42, 0.75);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      backdrop-filter: blur(12px);
-      border-radius: 20px;
-      padding: 30px;
-      max-width: 480px;
+    .terminal-window {
       width: 100%;
-      text-align: center;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(56, 189, 248, 0.05);
+      max-width: 650px;
+      background: #0b0f19;
+      border: 1px solid #00ff66;
+      box-shadow: 0 0 25px rgba(0, 255, 102, 0.2);
+      border-radius: 8px;
+      overflow: hidden;
     }
 
-    .badge {
-      display: inline-block;
-      padding: 4px 12px;
-      background: rgba(34, 197, 94, 0.15);
-      color: #4ade80;
-      border: 1px solid rgba(34, 197, 94, 0.3);
-      border-radius: 999px;
-      font-size: 0.75rem;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 15px;
-    }
-
-    h1 {
-      font-size: 1.8rem;
-      color: #38bdf8;
-      text-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
-      margin-bottom: 6px;
-    }
-
-    p.subtitle {
-      font-size: 0.85rem;
-      color: #94a3b8;
-      margin-bottom: 25px;
-    }
-
-    .clock-box {
-      background: rgba(2, 6, 23, 0.8);
-      border: 1px solid rgba(148, 163, 184, 0.15);
-      padding: 18px;
-      border-radius: 12px;
-      margin-bottom: 25px;
-    }
-
-    .clock {
-      font-size: 2.2rem;
-      font-weight: 600;
-      color: #f8fafc;
-      letter-spacing: 2px;
-    }
-
-    .date {
-      font-size: 0.8rem;
-      color: #64748b;
-      margin-top: 4px;
-    }
-
-    .sound-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-      margin-bottom: 25px;
-    }
-
-    .sound-card {
-      background: rgba(30, 41, 59, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      padding: 14px 16px;
+    .terminal-header {
+      background: #111827;
+      padding: 10px 15px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: all 0.25s ease;
+      border-bottom: 1px solid #1f2937;
     }
 
-    .sound-card.active {
-      border-color: #38bdf8;
-      background: rgba(56, 189, 248, 0.12);
-      box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+    .terminal-dots {
+      display: flex;
+      gap: 6px;
     }
 
-    .sound-info {
-      text-align: left;
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
     }
 
-    .sound-title {
-      font-size: 0.95rem;
-      font-weight: 600;
+    .dot.red { background: #ef4444; }
+    .dot.yellow { background: #eab308; }
+    .dot.green { background: #22c55e; }
+
+    .terminal-title {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      letter-spacing: 1px;
     }
 
-    .sound-desc {
-      font-size: 0.75rem;
-      color: #94a3b8;
+    .terminal-body {
+      padding: 20px;
     }
 
-    .btn-toggle {
-      background: #0284c7;
-      color: #ffffff;
-      border: none;
+    .banner {
+      font-size: 0.85rem;
+      color: #10b981;
+      margin-bottom: 20px;
+      line-height: 1.4;
+      text-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+    }
+
+    .target-selection {
+      margin-bottom: 20px;
+    }
+
+    .target-label {
+      font-size: 0.9rem;
+      color: #cbd5e1;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .target-btn {
+      background: #1f2937;
+      border: 1px solid #374151;
+      color: #f3f4f6;
       padding: 8px 16px;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 0.8rem;
-      font-weight: 600;
-      transition: 0.2s;
+      font-size: 0.85rem;
+      transition: all 0.2s;
     }
 
-    .sound-card.active .btn-toggle {
-      background: #ef4444;
+    .target-btn:hover {
+      border-color: #00ff66;
+      color: #00ff66;
     }
 
-    .quote-box {
+    .target-btn.active {
+      background: rgba(0, 255, 102, 0.15);
+      border-color: #00ff66;
+      color: #00ff66;
+    }
+
+    .action-btn {
+      width: 100%;
+      background: #00ff66;
+      color: #030712;
+      border: none;
+      padding: 12px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      cursor: pointer;
+      margin-top: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: opacity 0.2s;
+    }
+
+    .action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .console-output {
+      margin-top: 20px;
+      background: #030712;
+      border: 1px solid #1f2937;
+      border-radius: 6px;
+      padding: 15px;
+      height: 180px;
+      overflow-y: auto;
       font-size: 0.8rem;
-      color: #94a3b8;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding-top: 15px;
-      font-style: italic;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 8px;
+      background: #1f2937;
+      border-radius: 4px;
+      margin-top: 15px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: #00ff66;
+      box-shadow: 0 0 10px #00ff66;
+      transition: width 0.1s linear;
+    }
+
+    .prank-popup {
+      display: none;
+      margin-top: 20px;
+      padding: 15px;
+      border: 2px dashed #eab308;
+      background: rgba(234, 179, 8, 0.1);
+      border-radius: 6px;
+      text-align: center;
+      color: #fef08a;
+    }
+
+    .prank-popup h2 {
+      font-size: 1.3rem;
+      margin-bottom: 6px;
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <div class="badge">● Focus Mode</div>
-    <h1>Ambient Dev Space</h1>
-    <p class="subtitle">Focus, Code & Stay Productive</p>
-
-    <div class="clock-box">
-      <div class="clock" id="clock">00:00:00</div>
-      <div class="date" id="date">Loading...</div>
+  <div class="terminal-window">
+    <div class="terminal-header">
+      <div class="terminal-dots">
+        <div class="dot red"></div>
+        <div class="dot yellow"></div>
+        <div class="dot green"></div>
+      </div>
+      <div class="terminal-title">TERMINAL SIMULATOR v4.0.9</div>
     </div>
 
-    <div class="sound-grid">
-      <div class="sound-card" id="card-rain">
-        <div class="sound-info">
-          <div class="sound-title">🌧️ Deep Rain</div>
-          <div class="sound-desc">Ambient rain drops</div>
-        </div>
-        <button class="btn-toggle" onclick="toggleRain()">Play</button>
+    <div class="terminal-body">
+      <div class="banner">
+        [!] SYSTEM DIAGNOSTIC & PENETRATION AUDIT SIMULATOR<br>
+        [i] Safe environment for security UI demonstration.
       </div>
 
-      <div class="sound-card" id="card-typing">
-        <div class="sound-info">
-          <div class="sound-title">⌨️ Mechanical Keys</div>
-          <div class="sound-desc">Soft key clicks</div>
+      <div class="target-selection">
+        <span class="target-label">টার্গেট নোড সিলেক্ট করুন:</span>
+        <div class="btn-group">
+          <button class="target-btn" onclick="selectTarget('Facebook API', this)">Facebook</button>
+          <button class="target-btn" onclick="selectTarget('Instagram Gateway', this)">Instagram</button>
+          <button class="target-btn" onclick="selectTarget('TikTok Datacenter', this)">TikTok</button>
+          <button class="target-btn" onclick="selectTarget('Device Mainframe', this)">Local System</button>
         </div>
-        <button class="btn-toggle" onclick="toggleTyping()">Play</button>
       </div>
 
-      <div class="sound-card" id="card-whitenoise">
-        <div class="sound-info">
-          <div class="sound-title">📻 Brown Noise</div>
-          <div class="sound-desc">Low frequency focus hum</div>
-        </div>
-        <button class="btn-toggle" onclick="toggleNoise()">Play</button>
-      </div>
-    </div>
+      <button id="start-btn" class="action-btn" onclick="startSimulation()">সিমুলেশন শুরু করুন</button>
 
-    <div class="quote-box">
-      "Small daily improvements over time lead to stunning results."
+      <div class="progress-bar-container" id="prog-wrap">
+        <div class="progress-bar" id="prog-bar"></div>
+      </div>
+
+      <div class="console-output" id="console">
+        <div>> System idle. Select a target node to begin demonstration.</div>
+      </div>
+
+      <div class="prank-popup" id="prank-box">
+        <h2>😂 প্র্যাঙ্ক কমপ্লিট!</h2>
+        <p>ভয় পেয়েছেন? এটি কেবল একটি সিনেমাটিক সিমুলেশন পেজ, কোনো ক্ষতি হয়নি!</p>
+      </div>
     </div>
   </div>
 
   <script>
-    function updateClock() {
-      const now = new Date();
-      document.getElementById('clock').innerText = now.toLocaleTimeString();
-      document.getElementById('date').innerText = now.toLocaleDateString(undefined, {
-        weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'
-      });
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
+    let selectedTarget = 'Local System';
 
-    let audioCtx = null;
-    function getAudioCtx() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
-      return audioCtx;
+    function selectTarget(targetName, btn) {
+      selectedTarget = targetName;
+      document.querySelectorAll('.target-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      log(`> Target changed to: ${targetName}`);
     }
 
-    let rainNode = null;
-    function toggleRain() {
-      const card = document.getElementById('card-rain');
-      const btn = card.querySelector('button');
-      const ctx = getAudioCtx();
+    function log(message) {
+      const consoleBox = document.getElementById('console');
+      const entry = document.createElement('div');
+      entry.innerText = message;
+      consoleBox.appendChild(entry);
+      consoleBox.scrollTop = consoleBox.scrollHeight;
+    }
 
-      if (rainNode) {
-        rainNode.stop();
-        rainNode.disconnect();
-        rainNode = null;
-        card.classList.remove('active');
-        btn.innerText = 'Play';
-      } else {
-        const bufferSize = ctx.sampleRate * 2;
-        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-        const data = buffer.getChannelData(0);
-        let lastOut = 0.0;
-        for (let i = 0; i < bufferSize; i++) {
-          const white = Math.random() * 2 - 1;
-          data[i] = (lastOut + 0.02 * white) / 1.02;
-          lastOut = data[i];
-          data[i] *= 3.5;
+    function startSimulation() {
+      const btn = document.getElementById('start-btn');
+      const progWrap = document.getElementById('prog-wrap');
+      const progBar = document.getElementById('prog-bar');
+      const prankBox = document.getElementById('prank-box');
+
+      btn.disabled = true;
+      progWrap.style.display = 'block';
+      progBar.style.width = '0%';
+      prankBox.style.display = 'none';
+
+      log(`[+] Initializing handshake with ${selectedTarget}...`);
+
+      const logs = [
+        `[+] Injecting test payload packets...`,
+        `[+] Routing through proxy: 192.168.0.${Math.floor(Math.random() * 254) + 1}`,
+        `[~] Bypassing firewall protocols...`,
+        `[~] Decrypting SSL handshakes...`,
+        `[!] Root terminal access acquired!`,
+        `[!] Extracting temporary demo cache...`,
+        `[+] Verification complete.`
+      ];
+
+      let progress = 0;
+      let logIndex = 0;
+
+      const interval = setInterval(() => {
+        progress += 2;
+        progBar.style.width = progress + '%';
+
+        if (progress % 14 === 0 && logIndex < logs.length) {
+          log(logs[logIndex]);
+          logIndex++;
         }
 
-        rainNode = ctx.createBufferSource();
-        rainNode.buffer = buffer;
-        rainNode.loop = true;
-
-        const filter = ctx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.value = 800;
-
-        const gain = ctx.createGain();
-        gain.gain.value = 0.4;
-
-        rainNode.connect(filter);
-        filter.connect(gain);
-        gain.connect(ctx.destination);
-
-        rainNode.start();
-        card.classList.add('active');
-        btn.innerText = 'Stop';
-      }
-    }
-
-    let typingTimer = null;
-    function toggleTyping() {
-      const card = document.getElementById('card-typing');
-      const btn = card.querySelector('button');
-      const ctx = getAudioCtx();
-
-      if (typingTimer) {
-        clearInterval(typingTimer);
-        typingTimer = null;
-        card.classList.remove('active');
-        btn.innerText = 'Play';
-      } else {
-        function click() {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(150 + Math.random() * 200, ctx.currentTime);
-
-          gain.gain.setValueAtTime(0.08, ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.04);
-
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-
-          osc.start();
-          osc.stop(ctx.currentTime + 0.05);
+        if (progress >= 100) {
+          clearInterval(interval);
+          btn.disabled = false;
+          prankBox.style.display = 'block';
+          log(`[✓] SIMULATION TERMINATED.`);
         }
-
-        typingTimer = setInterval(() => {
-          if (Math.random() > 0.3) click();
-        }, 130);
-
-        card.classList.add('active');
-        btn.innerText = 'Stop';
-      }
-    }
-
-    let noiseNode = null;
-    function toggleNoise() {
-      const card = document.getElementById('card-whitenoise');
-      const btn = card.querySelector('button');
-      const ctx = getAudioCtx();
-
-      if (noiseNode) {
-        noiseNode.stop();
-        noiseNode.disconnect();
-        noiseNode = null;
-        card.classList.remove('active');
-        btn.innerText = 'Play';
-      } else {
-        const bufferSize = ctx.sampleRate * 2;
-        const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-        const data = buffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-          data[i] = (Math.random() * 2 - 1) * 0.08;
-        }
-
-        noiseNode = ctx.createBufferSource();
-        noiseNode.buffer = buffer;
-        noiseNode.loop = true;
-
-        const filter = ctx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.value = 350;
-
-        noiseNode.connect(filter);
-        filter.connect(ctx.destination);
-
-        noiseNode.start();
-        card.classList.add('active');
-        btn.innerText = 'Stop';
-      }
+      }, 70);
     }
   </script>
 </body>
