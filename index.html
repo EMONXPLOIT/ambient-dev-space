@@ -1,390 +1,61 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NeoWallet Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EMON | Online Income & Earnings BD</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Hind Siliguri', sans-serif;
-    }
-
-    body {
-      background-color: #f1f5f9;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 15px;
-    }
-
-    .phone-container {
-      width: 100%;
-      max-width: 380px;
-      background: #ffffff;
-      border-radius: 28px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      border: 1px solid #e2e8f0;
-    }
-
-    /* Top Bar */
-    .top-bar {
-      padding: 20px 20px 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .brand-name {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: #0f172a;
-    }
-
-    .brand-name span {
-      color: #6366f1;
-    }
-
-    .user-avatar {
-      width: 38px;
-      height: 38px;
-      background: #e0e7ff;
-      color: #4f46e5;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-
-    /* Balance Card */
-    .balance-card {
-      margin: 15px 20px;
-      padding: 24px;
-      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-      border-radius: 20px;
-      color: #ffffff;
-      box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
-      position: relative;
-    }
-
-    .card-label {
-      font-size: 0.85rem;
-      opacity: 0.85;
-      margin-bottom: 6px;
-    }
-
-    .balance-amount {
-      font-size: 2rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      margin-bottom: 12px;
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .card-badge {
-      display: inline-block;
-      background: rgba(255, 255, 255, 0.2);
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-    }
-
-    /* Quick Actions */
-    .section-title {
-      padding: 0 20px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #334155;
-      margin-top: 10px;
-      margin-bottom: 12px;
-    }
-
-    .quick-actions {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-      padding: 0 20px;
-      text-align: center;
-    }
-
-    .action-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-    }
-
-    .action-icon {
-      width: 48px;
-      height: 48px;
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      transition: transform 0.15s;
-    }
-
-    .action-icon:hover {
-      transform: translateY(-2px);
-      background: #eef2ff;
-    }
-
-    .action-label {
-      font-size: 0.75rem;
-      color: #475569;
-      font-weight: 600;
-    }
-
-    /* Transactions */
-    .transactions-list {
-      padding: 0 20px 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .transaction-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px;
-      background: #f8fafc;
-      border-radius: 12px;
-    }
-
-    .tx-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .tx-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: #dcfce7;
-      color: #16a34a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-    }
-
-    .tx-title {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: #1e293b;
-    }
-
-    .tx-date {
-      font-size: 0.7rem;
-      color: #94a3b8;
-    }
-
-    .tx-amount {
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: #16a34a;
-    }
-
-    /* Edit Modal */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.5);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      z-index: 100;
-    }
-
-    .modal-card {
-      background: #ffffff;
-      width: 100%;
-      max-width: 320px;
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    }
-
-    .modal-card h3 {
-      font-size: 1.1rem;
-      color: #0f172a;
-      margin-bottom: 15px;
-    }
-
-    .input-field {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      margin-bottom: 12px;
-      outline: none;
-    }
-
-    .input-field:focus {
-      border-color: #6366f1;
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: 10px;
-      justify-content: flex-end;
-    }
-
-    .btn {
-      padding: 8px 16px;
-      border-radius: 8px;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-      font-size: 0.85rem;
-    }
-
-    .btn-primary {
-      background: #4f46e5;
-      color: #ffffff;
-    }
-
-    .btn-secondary {
-      background: #e2e8f0;
-      color: #475569;
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@500;600;700&display=swap');
+    * { font-family: 'Hind Siliguri', sans-serif; }
   </style>
 </head>
-<body>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-4 pb-20">
 
-  <div class="phone-container">
-    <!-- Top Header -->
-    <div class="top-bar">
-      <div class="brand-name">Neo<span>Wallet</span></div>
-      <div class="user-avatar" onclick="openBalanceModal()">⚙️</div>
+  <div class="max-w-4xl mx-auto space-y-4">
+    <!-- Header -->
+    <header class="bg-slate-900 border border-cyan-500/30 p-4 rounded-2xl flex justify-between items-center shadow-xl">
+      <div>
+        <h1 class="text-base sm:text-xl font-black text-cyan-400">EMON | INCOME BD</h1>
+        <p class="text-[11px] text-gray-400">অনলাইন আর্নিং ও গাইডলাইন প্ল্যাটফর্ম</p>
+      </div>
+      <div class="bg-emerald-950 text-emerald-400 border border-emerald-500/30 px-3 py-1 rounded-xl text-xs font-bold flex items-center gap-1">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Active
+      </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <div class="bg-gradient-to-r from-cyan-950/40 via-slate-900 to-indigo-950/40 border border-cyan-500/30 p-5 rounded-2xl text-center space-y-2">
+      <h2 class="text-lg sm:text-xl font-bold text-cyan-300">ঘরে বসে বিভিন্ন মাধ্যম থেকে আয় করুন</h2>
+      <p class="text-xs text-slate-300">ইউটিউব, ফ্রিল্যান্সিং এবং অনলাইন প্ল্যাটফর্ম থেকে ইনকাম করার সহজ উপায় ও টিপস।</p>
     </div>
 
-    <!-- Balance Card -->
-    <div class="balance-card">
-      <div class="card-label">বর্তমান ওয়ালেট ব্যালেন্স</div>
-      <div class="balance-amount" id="balanceDisplay" title="ট্যাপ করে এডিট করুন">৳ ৫,০০০.০০</div>
-      <div class="card-badge">● ভেরিফাইড প্রোফাইল</div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div class="section-title">দ্রুত সেবা</div>
-    <div class="quick-actions">
-      <div class="action-item">
-        <div class="action-icon">💸</div>
-        <div class="action-label">সেন্ড মানি</div>
-      </div>
-      <div class="action-item">
-        <div class="action-icon">📥</div>
-        <div class="action-label">ক্যাশ ইন</div>
-      </div>
-      <div class="action-item">
-        <div class="action-icon">💳</div>
-        <div class="action-label">পেমেন্ট</div>
-      </div>
-      <div class="action-item">
-        <div class="action-icon">🔄</div>
-        <div class="action-label">উত্তোলন</div>
-      </div>
-    </div>
-
-    <!-- Recent History -->
-    <div class="section-title" style="margin-top: 20px;">লেনদেনের বিবরণ</div>
-    <div class="transactions-list">
-      <div class="transaction-item">
-        <div class="tx-left">
-          <div class="tx-icon">↓</div>
-          <div>
-            <div class="tx-title">ক্যাশ ইন প্রাপ্তি</div>
-            <div class="tx-date">আজ, ১০:৩০ AM</div>
-          </div>
+    <!-- Income Categories Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      
+      <!-- Card 1 -->
+      <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-2 shadow-md">
+        <div class="flex items-center gap-2 text-amber-400">
+          <i class="fa-brands fa-youtube text-xl"></i>
+          <h3 class="text-sm font-bold text-slate-100">ইউটিউব থেকে ইনকাম</h3>
         </div>
-        <div class="tx-amount">+ ৳ ১,২০০</div>
+        <p class="text-xs text-slate-400">কীভাবে চ্যানেল মনিটাইজ করবেন এবং ভিডিও তৈরি করে প্রতি মাসে হাজার হাজার টাকা আয় করবেন তার পূর্ণাঙ্গ গাইড।</p>
+        <button onclick="alert('গাইড শীঘ্রই আসছে!')" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold py-1.5 rounded-xl text-xs transition">বিস্তারিত পড়ুন</button>
       </div>
 
-      <div class="transaction-item">
-        <div class="tx-left">
-          <div class="tx-icon" style="background: #fee2e2; color: #ef4444;">↑</div>
-          <div>
-            <div class="tx-title">অনলাইন পেমেন্ট</div>
-            <div class="tx-date">গতকাল, ৪:১৫ PM</div>
-          </div>
+      <!-- Card 2 -->
+      <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-2 shadow-md">
+        <div class="flex items-center gap-2 text-cyan-400">
+          <i class="fa-solid fa-laptop-code text-xl"></i>
+          <h3 class="text-sm font-bold text-slate-100">ফ্রিল্যান্সিং ও অন্যান্য মাধ্যম</h3>
         </div>
-        <div class="tx-amount" style="color: #ef4444;">- ৳ ৪৫০</div>
+        <p class="text-xs text-slate-400">গিটহব, কোডিং এবং বিভিন্ন ডিজিটাল প্ল্যাটফর্ম ব্যবহার করে প্রফেশনাল ফ্রিল্যান্সিং শুরু করার উপায়।</p>
+        <button onclick="alert('গাইড শীঘ্রই আসছে!')" class="w-full bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-slate-700 font-bold py-1.5 rounded-xl text-xs transition">বিস্তারিত পড়ুন</button>
       </div>
+
     </div>
   </div>
 
-  <!-- Settings / Balance Edit Modal -->
-  <div class="modal-overlay" id="modalOverlay">
-    <div class="modal-card">
-      <h3>ব্যালেন্স পরিবর্তন করুন</h3>
-      <input type="number" id="newBalanceInput" class="input-field" placeholder="নতুন অ্যামাউন্ট লিখুন" />
-      <div class="modal-actions">
-        <button class="btn btn-secondary" onclick="closeBalanceModal()">বাতিল</button>
-        <button class="btn btn-primary" onclick="updateBalance()">সেভ করুন</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const balanceDisplay = document.getElementById('balanceDisplay');
-    const modalOverlay = document.getElementById('modalOverlay');
-    const newBalanceInput = document.getElementById('newBalanceInput');
-
-    // ব্যালেন্সে ট্রিপল-ক্লিক (পরপর ৩ বার ক্লিক) করলে মডাল ওপেন হবে
-    let clickCount = 0;
-    let clickTimer = null;
-
-    balanceDisplay.addEventListener('click', () => {
-      clickCount++;
-      if (clickCount === 1) {
-        clickTimer = setTimeout(() => {
-          clickCount = 0;
-        }, 500);
-      } else if (clickCount === 3) {
-        clearTimeout(clickTimer);
-        clickCount = 0;
-        openBalanceModal();
-      }
-    });
-
-    function openBalanceModal() {
-      modalOverlay.style.display = 'flex';
-      newBalanceInput.value = '';
-      newBalanceInput.focus();
-    }
-
-    function closeBalanceModal() {
-      modalOverlay.style.display = 'none';
-    }
-
-    function updateBalance() {
-      const val = parseFloat(newBalanceInput.value);
-      if (!isNaN(val)) {
-        balanceDisplay.innerText = '৳ ' + val.toLocaleString('bn-BD', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        closeBalanceModal();
-      } else {
-        alert('সঠিক সংখ্যা ইনপুট দিন');
-      }
-    }
-  </script>
 </body>
 </html>
